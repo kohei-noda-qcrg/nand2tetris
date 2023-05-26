@@ -13,6 +13,8 @@ CHIP Xor {
     OUT out;
 
     PARTS:
+    // 01 or 10 = 1, otherwise 0
+    // => a_bar*b + a*b_bar => Or(And(Not(a), b), And(a, Not(b))
     Not(in=a, out=notA);
     Not(in=b, out=notB);
     And(a=notA, b=b, out=notAAndB);

@@ -18,7 +18,7 @@ CHIP Mux8Way16 {
     OUT out[16];
 
     PARTS:
-    Mux4Way16(a=a, b=b, c=c, d=d, sel=sel[0..1], out=w1);
-    Mux4Way16(a=e, b=f, c=g, d=h, sel=sel[0..1], out=w2);
-    Mux16(a=w1, b=w2, sel=sel[2], out=out);
+    Mux4Way16(a=a, b=b, c=c, d=d, sel=sel[0..1], out=w1); // w1 = a if sel[0..1] = 00, w1 = b if sel[0..1] == 01 ...
+    Mux4Way16(a=e, b=f, c=g, d=h, sel=sel[0..1], out=w2); // w2 = e if sel[0..1] = 00, w2 = f if sel[0..1] == 01 ...
+    Mux16(a=w1, b=w2, sel=sel[2], out=out); // out = w1 if sel[2] = 0, out = w2 if sel[2] = 1
 }
