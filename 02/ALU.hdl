@@ -42,5 +42,35 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-   // Put you code here:
+    // ==================================================================================
+    // zx, nz
+    // ==================================================================================
+    Zero16SelIs1(in=x, sel=zx, out=zeroX); // zeroX = (zx == 1) ? 0 : x
+    Negate16SelIs1(in=zeroX, sel=nx, out=negX); // negX = (nx == 1) ? -zeroX : zeroX
+    // ==================================================================================
+    // zy, ny
+    // ==================================================================================
+    Zero16SelIs1(in=y, sel=zy, out=zeroY); // zeroY = (zy == 1) ? 0 : y
+    Negate16SelIs1(in=zeroY, sel=ny, out=negY); // negY = (ny == 1) ? -zeroY : zeroY
+    // ==================================================================================
+    // f
+    // ==================================================================================
+    // If f == 1, out = x + y
+    // otherwise, out = x & y
+    Add16(a=negX, b=negY, out=addOut); // addOut = negX + negY
+    And16(a=negX, b=negY, out=andOut); // andOut = negX & negY
+    Mux16(a=andOut, b=addOut, sel=f, out=fout); // out = (f == 1) ? addOut : andOut
+    // ==================================================================================
+    // no
+    // ==================================================================================
+    Not16(in=fout, out=notOut); // notOut = (no == 1) ? !fout : fout
+    Mux16(a=fout, b=notOut, sel=no, out=out, out[0..15]=outZr, out[15]=ng); // out = (no == 1) ? notOut : fout
+    // ==================================================================================
+    // zr, ng
+    // ==================================================================================
+    // Can't use out directly
+    // (error): Can't connect gate's output pin to part: load ALU.hdl 
+    // so use outZr instead
+    Or16Way(in=outZr, out=orOut); // orOut1 = out[0] | out[1] | ... | out[7] | out[8] | ... | out[15]
+    Not(in=orOut, out=zr); // zr = (orOut == 0) ? 1 : 0
 }
